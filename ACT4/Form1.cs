@@ -157,11 +157,13 @@ namespace ACT4
 
             return hStates;
         }
-
         private ArrayList getBestMoves(int[,] heuristicTable)
         {
+            double temperature = 10;
+            double decrease = .5;
             ArrayList bestMoves = new ArrayList();
             int bestHeuristicValue = heuristicTable[0, 0];
+            var rand = new Random();
 
             for (int i = 0; i < n; i++)
             {
@@ -171,18 +173,31 @@ namespace ACT4
                     {
                         bestHeuristicValue = heuristicTable[i, j];
                         bestMoves.Clear();
-                        if (currentState.Y[i] != j)
+                        if (currentState.Y[i] != j) 
                             Console.WriteLine("ssjsj");
                             bestMoves.Add(new Point(i, j));
-                    } else if (bestHeuristicValue == heuristicTable[i,j])
+                    }
+                    else if (bestHeuristicValue == heuristicTable[i, j])
                     {
+                        if (currentState.Y[i] != j)
+                            bestMoves.Add(new Point(i, j));
+                    }else if (calculateProb(heuristicTable[i,j],temperature) >= rand.Next(0,2))
+                    {
+                        Console.WriteLine("Went here");
                         if (currentState.Y[i] != j)
                             bestMoves.Add(new Point(i, j));
                     }
                 }
+                temperature-= decrease;
             }
             label5.Text = "Possible Moves (H="+bestHeuristicValue+")";
             return bestMoves;
+        }
+        public double calculateProb(int n, double temp) 
+        {
+            double prob = Math.Exp(-n / temp); 
+            Console.WriteLine("Prob is: "+prob);
+            return prob;
         }
 
 
